@@ -11,8 +11,6 @@
   output: "🌐 ifconfig command detected (cmd=%proc.cmdline user=%user.name)"
   priority: INFO
   tags: [network, selfscore, open]
-  
-
 
 - rule: Detect Netstat Command
   desc: Detect when a user runs the netstat command (network diagnostics)
@@ -21,9 +19,3 @@
   priority: INFO
   tags: [lab, selfscore, net, netstat]
 
-- rule: Detect Netstat Command
-  desc: Detect when a user runs the netstat command (network diagnostics)
-  condition: evt.type = execve and proc.name = "netstat"
-  output: "📡 Netstat executed: %proc.cmdline by %user.name"
-  priority: INFO
-  tags: [lab, selfscore, net, netstat]
