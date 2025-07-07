@@ -11,4 +11,5 @@
   output: "🌐 ifconfig command detected (cmd=%proc.cmdline user=%user.name)"
   priority: INFO
   tags: [network, selfscore, open]
+  
 
