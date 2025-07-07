@@ -7,4 +7,4 @@
   output: "🔐 /etc/passwd read via cat by user=%user.name (cmd=%proc.cmdline)"
   priority: NOTICE
   tags: [lab, selfscore, passwd, recon]
-# Rules from WAIVO will appear here and be synced automatically.
+
