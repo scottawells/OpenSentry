@@ -5,7 +5,7 @@
   priority: WARNING
   tags: [lab, selfscore, usermgmt, open]
 
-  - rule: Detect Use of ifconfig
+- rule: Detect Use of ifconfig
   desc: Detect when a user runs the ifconfig command (legacy network tool)
   condition: evt.type = execve and proc.name = "ifconfig"
   output: "🌐 ifconfig command detected (cmd=%proc.cmdline user=%user.name)"
