@@ -41,12 +41,13 @@
   tags: [lab, selfscore, net, netstat]
 
 - rule: Detect cat on /etc/passwd
-  desc: Detect any attempt to read /etc/passwd using cat
+  desc: Detect when a user runs `cat` to read the /etc/passwd file
   condition: >
-    evt.type in (open, openat, read) and
+    evt.type in (open, openat) and
     fd.name = "/etc/passwd" and
     proc.name = "cat"
-  output: "🔐 /etc/passwd accessed via cat (cmd=%proc.cmdline user=%user.name)"
+  output: "🔐 /etc/passwd read via cat by user=%user.name (cmd=%proc.cmdline)"
   priority: NOTICE
   tags: [lab, selfscore, passwd, recon]
+
 
