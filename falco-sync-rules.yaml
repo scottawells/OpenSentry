@@ -1,9 +1,30 @@
-- rule: Detect User Creation
-  desc: Detect when a user is added to the system via useradd or adduser
-  condition: evt.type = execve and proc.name in (useradd, adduser)
-  output: "👤 New user creation detected: %proc.name run by %user.name (cmd=%proc.cmdline)"
+- rule: Detect whoami Command
+  desc: Trigger alert when 'whoami' is run
+  condition: evt.type = execve and proc.name = "whoami"
+  output: "ALERT: whoami command run by user=%user.name (parent=%proc.pname)"
+  priority: NOTICE
+  tags: [custom, test]
+
+- rule: Port 8080 Opened
+  desc: Detect when a process begins listening on TCP port 8080
+  condition: evt.type = listen and fd.sport = 8080 and fd.l4proto = tcp and fd.typechar = 4
+  output: "✅ Port 8080 opened by %proc.name (pid=%proc.pid user=%user.name)"
+  priority: NOTICE
+  tags: [lab, selfscore, openport]
+
+- rule: Learner Probed Port 8080
+  desc: Detect when the user tries to check if port 8080 is open
+  condition: evt.type = execve and proc.name in (nmap, curl, ss) and proc.args contains "8080"
+  output: "🕵️ Learner probed port 8080 using %proc.name (cmd=%proc.cmdline user=%user.name)"
+  priority: INFO
+  tags: [lab, selfscore, portscan, verify]
+
+- rule: Detect Netcat Listener
+  desc: Detect when a user starts a netcat listener on any TCP port
+  condition: evt.type = bind and proc.name = "nc"
+  output: "📡 Netcat listener detected: proc=%proc.name user=%user.name port=%fd.sport"
   priority: WARNING
-  tags: [lab, selfscore, usermgmt, open]
+  tags: [lab, selfscore, netcat, listener]
 
 - rule: Detect Use of ifconfig
   desc: Detect when a user runs the ifconfig command (legacy network tool)
@@ -19,3 +40,12 @@
   priority: INFO
   tags: [lab, selfscore, net, netstat]
 
+- rule: Detect cat on /etc/passwd
+  desc: Detect when a user runs `cat` to read the /etc/passwd file
+  condition: >
+    evt.type = open and
+    proc.name = "cat" and
+    fd.name = "/etc/passwd"
+  output: "🔐 /etc/passwd read via cat by user=%user.name (cmd=%proc.cmdline)"
+  priority: NOTICE
+  tags: [lab, selfscore, passwd, recon]
