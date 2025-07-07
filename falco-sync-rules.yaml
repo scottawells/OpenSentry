@@ -1,0 +1,6 @@
+- rule: Detect User Creation
+  desc: Detect when a user is added to the system via useradd or adduser
+  condition: evt.type = execve and proc.name in (useradd, adduser)
+  output: "👤 New user creation detected: %proc.name run by %user.name (cmd=%proc.cmdline)"
+  priority: WARNING
+  tags: [lab, selfscore, usermgmt, open]
