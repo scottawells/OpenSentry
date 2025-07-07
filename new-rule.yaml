@@ -1,1 +1,10 @@
+- rule: Detect cat on /etc/passwd
+  desc: Detect when a user runs `cat` to read the /etc/passwd file
+  condition: >
+    evt.type = open and
+    proc.name = "cat" and
+    fd.name = "/etc/passwd"
+  output: "🔐 /etc/passwd read via cat by user=%user.name (cmd=%proc.cmdline)"
+  priority: NOTICE
+  tags: [lab, selfscore, passwd, recon]
 # Rules from WAIVO will appear here and be synced automatically.
