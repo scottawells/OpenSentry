@@ -50,4 +50,13 @@
   priority: NOTICE
   tags: [lab, selfscore, passwd, recon]
 
+- rule: Detect iptables Modification
+  desc: Detect when a user attempts to add or modify firewall rules using iptables
+  condition: >
+    evt.type = execve and
+    proc.name = "iptables" and
+    proc.args contains "-A"
+  output: "🛡️ iptables modification detected: %proc.cmdline by user=%user.name"
+  priority: WARNING
+  tags: [lab, selfscore, firewall, iptables]
 
