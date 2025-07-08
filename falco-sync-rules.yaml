@@ -90,13 +90,3 @@
   output: "🔍 Security-relevant action executed: %proc.name %proc.args by %user.name"
   priority: INFO
   tags: [competency:641, log-trigger, testing]
-
-- rule: Verify Logging via Log Inspection
-  desc: Detect user inspecting log files (syslog, audit, firewall)
-  condition: >
-    evt.type in (open, openat) and
-    fd.name in ("/var/log/syslog", "/var/log/audit/audit.log", "/var/log/ufw.log") and
-    proc.name in ("cat", "less", "tail")
-  output: "🧾 Log file viewed: %fd.name by %user.name using %proc.name"
-  priority: INFO
-  tags: [competency:641, verify-logging, log-inspect]
