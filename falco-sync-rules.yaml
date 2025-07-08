@@ -60,3 +60,45 @@
   priority: WARNING
   tags: [lab, selfscore, firewall, iptables]
 
+# === DCWF Competency 641 Rules ===
+
+- rule: Enable Logging System
+  desc: Detect when a user enables a system logging mechanism
+  condition: >
+    evt.type = execve and
+    proc.name in ("auditctl", "ufw") and
+    proc.args contains any ("-e", "logging", "start")
+  output: "🛡️ Logging enabled: %proc.name %proc.args by %user.name"
+  priority: NOTICE
+  tags: [competency:641, logging, configuration]
+
+- rule: Modify Logging Configuration
+  desc: Detect edits to common logging config files
+  condition: >
+    (evt.type in (open, openat) and
+     fd.name in ("/etc/audit/audit.rules", "/etc/rsyslog.conf", "/etc/ufw/ufw.conf")) and
+    proc.name in ("nano", "vi", "vim", "sed", "echo")
+  output: "⚙️ Logging config modified: %fd.name by %user.name using %proc.name"
+  priority: WARNING
+  tags: [competency:641, logging, config-edit]
+
+- rule: Trigger Security Logging
+  desc: Detect common security-relevant system probes that should be logged
+  condition: >
+    (proc.name = "nmap" and proc.args contains "-p") or
+    (proc.name = "nc" and proc.args contains "-z")
+  output: "🔍 Security-relevant action executed: %proc.name %proc.args by %user.name"
+  priority: INFO
+  tags: [competency:641, log-trigger, testing]
+
+- rule: Verify Logging via Log Inspection
+  desc: Detect user inspecting log files (syslog, audit, firewall)
+  condition: >
+    evt.type in (open, openat) and
+    fd.name in ("/var/log/syslog", "/var/log/audit/audit.log", "/var/log/ufw.log") and
+    proc.name in ("cat", "less", "tail")
+  output: "🧾 Log file viewed: %fd.name by %user.name using %proc.name"
+  priority: INFO
+  tags: [competency:641, verify-logging, log-inspect]
+
+
