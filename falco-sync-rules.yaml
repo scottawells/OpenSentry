@@ -67,7 +67,7 @@
   condition: >
     evt.type = execve and
     proc.name in ("auditctl", "ufw") and
-    proc.args contains any ("-e", "logging", "start")
+    (proc.args contains "-e" or proc.args contains "logging" or proc.args contains "start")
   output: "🛡️ Logging enabled: %proc.name %proc.args by %user.name"
   priority: NOTICE
   tags: [competency:641, logging, configuration]
