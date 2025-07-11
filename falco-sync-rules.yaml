@@ -22,3 +22,24 @@
   output: "🔎 Port scan (nmap) executed: %proc.cmdline"
   priority: INFO
   tags: [waivo, demo, competency:81A]
+  
+- rule: waivo_406_nmap_scan
+  desc: Detect basic nmap scan
+  condition: evt.type=execve and proc.name="nmap"
+  output: "🔍 Nmap scan initiated: %proc.cmdline by %user.name"
+  priority: NOTICE
+  tags: [competency:406, vulnscan, waivo]
+
+- rule: waivo_406_nessuscli
+  desc: Detect use of nessuscli to launch scan
+  condition: evt.type=execve and proc.name="nessuscli"
+  output: "🧪 Nessus CLI scan launched: %proc.cmdline by %user.name"
+  priority: WARNING
+  tags: [competency:406, vulnscan, waivo]
+
+- rule: waivo_406_dirsearch
+  desc: Detect execution of dirsearch for directory brute-forcing
+  condition: evt.type=execve and (proc.name="dirsearch" or proc.args contains "dirsearch.py")
+  output: "📁 dirsearch tool executed: %proc.cmdline by %user.name"
+  priority: INFO
+  tags: [competency:406, vulnscan, waivo]
