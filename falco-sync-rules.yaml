@@ -1,6 +1,24 @@
-- rule: Test WAIVO Push
-  desc: This is a test push from WAIVO
-  condition: evt.type = execve and proc.name = "test"
-  output: "✅ WAIVO test rule triggered by %proc.name"
+# WAIVO Falco Rule Sync
+# Competency: 81A – Conduct security control assessments
+# Generated 2025-07-10
+
+- rule: waivo_81A_verify_auditctl
+  desc: Detect use of auditctl to inspect audit settings
+  condition: evt.type = execve and proc.name = "auditctl"
+  output: "🧪 auditctl used to verify system audit policy: %proc.cmdline"
+  priority: NOTICE
+  tags: [waivo, demo, competency:81A]
+
+- rule: waivo_81A_read_audit_rules
+  desc: Detect when audit.rules is read or opened
+  condition: evt.type in (open, openat) and fd.name = "/etc/audit/audit.rules"
+  output: "📜 audit.rules accessed by %proc.name (cmdline=%proc.cmdline)"
   priority: INFO
-  tags: [waivo, test]
+  tags: [waivo, demo, competency:81A]
+
+- rule: waivo_81A_port_probe_test
+  desc: Detect nmap port scan as part of logging verification
+  condition: evt.type = execve and proc.name = "nmap" and proc.args contains "-p"
+  output: "🔎 Port scan (nmap) executed: %proc.cmdline"
+  priority: INFO
+  tags: [waivo, demo, competency:81A]
