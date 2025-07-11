@@ -43,3 +43,18 @@
   output: "📁 dirsearch tool executed: %proc.cmdline by %user.name"
   priority: INFO
   tags: [competency:406, vulnscan, waivo]
+
+  - rule: waivo_437_probe_with_nmap
+  desc: Learner used nmap to probe ports, indicating network vulnerability analysis.
+  condition: evt.type = execve and proc.name = "nmap"
+  output: "🔍 Competency 437: Port scan using nmap detected (cmd=%proc.cmdline user=%user.name)"
+  priority: NOTICE
+  tags: [waivo, demo, competency:437]
+
+- rule: waivo_437_service_discovery_ss
+  desc: Learner used 'ss' to list services for network enumeration.
+  condition: evt.type = execve and proc.name = "ss" and proc.args contains "-tuln"
+  output: "📡 Competency 437: Service discovery via ss (cmd=%proc.cmdline user=%user.name)"
+  priority: INFO
+  tags: [waivo, demo, competency:437]
+
