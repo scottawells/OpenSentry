@@ -58,3 +58,11 @@
   priority: INFO
   tags: [waivo, demo, competency:437]
 
+  - rule: waivo_437_listen_ports_netstat
+  desc: Detect when user runs netstat or ss to inspect listening services
+  condition: evt.type=execve and proc.name in (netstat, ss) and proc.args contains "listen"
+  output: "🔍 Competency 437 – Inspecting listening services via %proc.name: %proc.cmdline"
+  priority: INFO
+  tags: [waivo, demo, competency:437, task:inspect_listening_services]
+
+
